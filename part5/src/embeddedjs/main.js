@@ -24,7 +24,8 @@ const DEFAULT_SETTINGS = {
     backgroundColor: { r: 0, g: 0, b: 0 },
     textColor: { r: 255, g: 255, b: 255 },
     useFahrenheit: false,
-    showDate: true
+    showDate: true,
+    use24Hour: true
 };
 
 // Load settings from persistent storage
@@ -241,10 +242,14 @@ function drawScreen(event) {
             (render.width - btWidth) / 2, btY);
     }
 
-    // Format time as HH:MM
-    const hours = String(now.getHours()).padStart(2, "0");
+    // Format time as HH:MM (24h) or H:MM (12h)
+    let hours = now.getHours();
+    if (!settings.use24Hour) {
+        hours = hours % 12 || 12;
+    }
+    const hoursStr = String(hours).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
-    const timeStr = `${hours}:${minutes}`;
+    const timeStr = `${hoursStr}:${minutes}`;
 
     // Draw time centered
     let width = render.getTextWidth(timeStr, timeFont);
@@ -288,7 +293,7 @@ watch.addEventListener("hourchange", requestLocation);
 
 // Receive settings from Clay configuration page
 const message = new Message({
-    keys: ["BackgroundColor", "TextColor", "TemperatureUnit", "ShowDate"],
+    keys: ["BackgroundColor", "TextColor", "TemperatureUnit", "ShowDate", "HourFormat"],
     onReadable() {
         const msg = this.read();
 
@@ -307,6 +312,10 @@ const message = new Message({
         const sd = msg.get("ShowDate");
         if (sd !== undefined) {
             settings.showDate = sd === 1;
+        }
+        const hf = msg.get("HourFormat");
+        if (hf !== undefined) {
+            settings.use24Hour = hf === 1;
         }
 
         saveSettings();

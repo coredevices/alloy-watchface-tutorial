@@ -31,7 +31,8 @@
       "BackgroundColor",
       "TextColor",
       "TemperatureUnit",
-      "ShowDate"
+      "ShowDate",
+      "HourFormat"
     ],
     "resources": {
       "media": []

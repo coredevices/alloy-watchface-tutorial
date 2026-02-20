@@ -46,6 +46,12 @@ module.exports = [
         "messageKey": "ShowDate",
         "label": "Show Date",
         "defaultValue": true
+      },
+      {
+        "type": "toggle",
+        "messageKey": "HourFormat",
+        "label": "Use 24-Hour Format",
+        "defaultValue": true
       }
     ]
   },
